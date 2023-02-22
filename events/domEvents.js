@@ -1,5 +1,10 @@
+// import { deleteSingleAuthor, getAuthors } from '../api/authorData';
 import { deleteBook, getBooks } from '../api/bookData';
+// import { showAuthors } from '../pages/authors';
 import { showBooks } from '../pages/books';
+import client from '../utils/client';
+
+const endpoint = client.databaseURL;
 
 const domEvents = () => {
   document.querySelector('#main-container').addEventListener('click', (e) => {
@@ -38,6 +43,13 @@ const domEvents = () => {
       if (window.confirm('Want to delete?')) {
         console.warn('DELETE AUTHOR', e.target.id);
         console.warn(e.target.id.split('--'));
+        const [, firebaseKey] = e.target.id.split('--');
+        console.warn(firebaseKey);
+        console.warn(`${endpoint}/authors/${firebaseKey}.json`);
+
+        // deleteSingleAuthor(firebaseKey).then(() => {
+        // getAuthors().then(showAuthors);
+        // });
       }
     }
 
