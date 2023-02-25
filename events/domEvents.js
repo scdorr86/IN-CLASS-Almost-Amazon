@@ -1,10 +1,13 @@
-import { deleteSingleAuthor, getAuthors, getSingleAuthor } from '../api/authorData';
+import { getAuthors, getSingleAuthor } from '../api/authorData';
 import { deleteBook, getBooks, getSingleBook } from '../api/bookData';
 import addBookForm from '../components/forms/addBookForm';
 import addAuthorForm from '../components/forms/addAuthorForm';
 import { showAuthors } from '../pages/authors';
 import { showBooks } from '../pages/books';
 import client from '../utils/client';
+import { getBookDetails, getAuthorsDetails, deleteAuthorBooksRelationship } from '../api/mergedData';
+import viewBook from '../pages/viewBook';
+import viewAuthor from '../pages/viewAuthor';
 
 const endpoint = client.databaseURL;
 
@@ -42,6 +45,18 @@ const domEvents = () => {
     if (e.target.id.includes('view-book-btn')) {
       console.warn('VIEW BOOK', e.target.id);
       console.warn(e.target.id.split('--'));
+
+      const [, firebaseKey] = e.target.id.split('--');
+      getBookDetails(firebaseKey).then(viewBook);
+    }
+
+    // TODO: CLICK EVENT FOR VIEW AUTHOR BOOKS
+    if (e.target.id.includes('view-author-btn')) {
+      console.warn('VIEW AUTHOR BOOKS', e.target.id);
+      console.warn(e.target.id.split('--'));
+
+      const [, firebaseKey] = e.target.id.split('--');
+      getAuthorsDetails(firebaseKey).then(viewAuthor);
     }
 
     // FIXME: ADD CLICK EVENT FOR DELETING AN AUTHOR
@@ -54,7 +69,7 @@ const domEvents = () => {
         console.warn(firebaseKey);
         console.warn(`${endpoint}/authors/${firebaseKey}.json`);
 
-        deleteSingleAuthor(firebaseKey).then(() => {
+        deleteAuthorBooksRelationship(firebaseKey).then(() => {
           getAuthors().then(showAuthors);
         });
       }
